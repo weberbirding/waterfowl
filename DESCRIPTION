@@ -1,10 +1,12 @@
 Package: waterfowl
-Title: What the Package Does (One Line, Title Case)
+Title: Functions for Waterfowl Research
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("David", "Weber", , "dweber1594@gmail.com", role = c("aut", "cre"))
+Description: A group of wrapper functions to simplify and streamline waterfowl research, 
+    primarily by graduate students and state biologists. At present, this package
+    focuses on spatial and tracking data and analsyses, but hopes to expand to all
+    aspects of waterfowl research.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
