@@ -1,4 +1,9 @@
-#' Title
+#' Subset or split a Move* object
+#'
+#' @description A function to simplify subsetting or splitting up a \code{Move}
+#'   object. Allows for pulling out a single month and/or year, pulling out day
+#'   vs. night, and/or splitting into smaller \code{Move} objects for each day,
+#'   week, month, or year.
 #'
 #' @param data A \code{Move*} object.
 #' @param birds Temporary.
@@ -19,102 +24,104 @@
 #' NA
 subsetMove <- function(data, birds = NA, date = NA, month = NA, year = NA,
                        DayNight = "no", timeSplit = "none"){
-  if (is.na(birds) == TRUE &&
-      is.na(date) == TRUE &&
-      is.na(month) == TRUE &&
-      is.na(year) == TRUE &&
+  if (is.na(birds) &&
+      is.na(date) &&
+      is.na(month) &&
+      is.na(year) &&
       DayNight == "no" &&
-      timeSplit == "none"){
+      timeSplit == "none") {
     message("No subset conditions were input. Returning unchanged data.")
     return(data)
   }
   if (DayNight != "day" & DayNight != "night" & DayNight != "no"){
     stop("DayNight must be 'day', 'night', or 'no'.")
   }
-  if (class(data) == "MoveStack"){
+  if (is(data, "MoveStack")) {
     data <- move::split(data)
   }
-  if (is.list(data) == TRUE){
+  if (is.list(data)) {
     results <- plyr::llply(data, subsetMove, birds = birds, date = date,
                            month = month, year = year, DayNight = DayNight,
                            timeSplit = timeSplit)
     return(results)
   }
-  if (is.na(birds) == FALSE){
+  if (!is.na(birds)) {
     data <- data[names(data) %in% birds]
   }
-  if (is.na(date) == FALSE){
-    data <- data[as.Date(timestamps(data))==as.Date(date)]
+  if (!is.na(date)) {
+    data <- data[as.Date(move::timestamps(data))==as.Date(date)]
   }
-  if (is.na(month) == FALSE){
-    data <- data[month(timestamps(data))==month]
+  if (!is.na(month)) {
+    data <- data[month(move::timestamps(data))==month]
   }
-  if (is.na(year) == FALSE){
-    data <- data[year(timestamps(data))==year]
+  if (!is.na(year)) {
+    data <- data[year(move::timestamps(data))==year]
   }
-  if (DayNight == "day"){
-    DN <- rep("Day", n.locs(data)-1)
+  if (DayNight == "day") {
+    DN <- rep("Day", move::n.locs(data)-1)
     DN[maptools::solarpos(
-      data[-n.locs(data)],
-      timestamps(data)[-n.locs(data)])[,2] < -6 &
-        maptools::solarpos(data[-1], timestamps(data)[-1])[,2] < -6] <- "Night"
+      data[-move::n.locs(data)],
+      move::timestamps(data)[-move::n.locs(data)])[,2] < -6 &
+        maptools::solarpos(data[-1], move::timestamps(data)[-1])[,2] < -6] <- "Night"
     d.burst <- move::burst(x = data, f = DN)
     data <- data[d.burst@burstId == "Day"]
   }
-  if (DayNight == "night"){
-    DN <- rep("Day", n.locs(data)-1)
+  if (DayNight == "night") {
+    DN <- rep("Day", move::n.locs(data)-1)
     DN[maptools::solarpos(
-      data[-n.locs(data)],
-      timestamps(data)[-n.locs(data)])[,2] < -6 &
-        maptools::solarpos(data[-1], timestamps(data)[-1])[,2] < -6] <- "Night"
+      data[-move::n.locs(data)],
+      move::timestamps(data)[-move::n.locs(data)])[,2] < -6 &
+        maptools::solarpos(data[-1], move::timestamps(data)[-1])[,2] < -6] <- "Night"
     d.burst <- move::burst(x = data, f = DN)
     data <- data[d.burst@burstId == "Night"]
   }
-  if (timeSplit == "daily"){
-    startDate <- date(timestamps(data))[1]
-    endDate <- date(timestamps(data))[length(data)]
+  if (timeSplit == "daily") {
+    startDate <- date(move::timestamps(data))[1]
+    endDate <- date(move::timestamps(data))[length(data)]
     dates <- seq(startDate, endDate, by=1)
     list <- list()
     for (d in dates) {
-      data.day <- data[as.Date(timestamps(data), tz = tz(timestamps(data))) == d]
+      data.day <- data[as.Date(move::timestamps(data),
+                               tz = lubridate::tz(move::timestamps(data))) == d]
       list <- append(list,data.day)
     }
     names(list) <- as.character(dates)
     return(list)
   }
-  if (timeSplit == "weekly"){
-    startDate <- date(timestamps(data))[1]
-    endDate <- date(timestamps(data))[length(data)]
+  if (timeSplit == "weekly") {
+    startDate <- date(move::timestamps(data))[1]
+    endDate <- date(move::timestamps(data))[length(data)]
     weeks <- seq(startDate, endDate, by="week")
     list <- list()
     for (i in 1:length(weeks)) {
-      data.week <- data[as.Date(timestamps(data), tz = tz(timestamps(data))) %in%
+      data.week <- data[as.Date(move::timestamps(data),
+                                tz = lubridate::tz(move::timestamps(data))) %in%
                           c(as.Date(weeks[i]):as.Date(weeks[i]+6))]
       list <- append(list,data.week)
     }
     names(list) <- as.character(weeks)
     return(list)
   }
-  if (timeSplit == "monthly"){
-    startDate <- date(timestamps(data))[1]
-    endDate <- date(timestamps(data))[length(data)]
+  if (timeSplit == "monthly") {
+    startDate <- date(move::timestamps(data))[1]
+    endDate <- date(move::timestamps(data))[length(data)]
     months <- month(seq(startDate, endDate, by="month"), label = TRUE)
     years <- year(seq(startDate, endDate, by="month"))
     list <- list()
     for (i in 1:length(months)) {
-      data.month <- data[month(timestamps(data), label = TRUE) == months[i]]
+      data.month <- data[month(move::timestamps(data), label = TRUE) == months[i]]
       list <- append(list,data.month)
     }
     names(list) <- paste(months, years, sep = " ")
     return(list)
   }
-  if (timeSplit == "yearly"){
-    startDate <- date(timestamps(data))[1]
-    endDate <- date(timestamps(data))[length(data)]
+  if (timeSplit == "yearly") {
+    startDate <- date(move::timestamps(data))[1]
+    endDate <- date(move::timestamps(data))[length(data)]
     years <- unique(year(seq(startDate, endDate, by="week")))
     list <- list()
     for (i in 1:length(years)) {
-      data.month <- data[year(timestamps(data))==years[i]]
+      data.month <- data[year(move::timestamps(data))==years[i]]
       list <- append(list,data.month)
     }
     names(list) <- years

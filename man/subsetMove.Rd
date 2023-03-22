@@ -2,7 +2,7 @@
 % Please edit documentation in R/move.R
 \name{subsetMove}
 \alias{subsetMove}
-\title{Title}
+\title{Subset or split a Move* object}
 \usage{
 subsetMove(
   data,
@@ -37,7 +37,10 @@ the function will return a list of 60+ \code{Move} objects, one for each day.}
 A \code{Move} object or a list of \code{Move} objects.
 }
 \description{
-Title
+A function to simplify subsetting or splitting up a \code{Move}
+object. Allows for pulling out a single month and/or year, pulling out day
+vs. night, and/or splitting into smaller \code{Move} objects for each day,
+week, month, or year.
 }
 \examples{
 NA
