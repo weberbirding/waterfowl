@@ -20,6 +20,7 @@ Imports:
     dplyr,
     exactextractr,
     FedData,
+    lifecycle,
     magrittr,
     methods,
     move,

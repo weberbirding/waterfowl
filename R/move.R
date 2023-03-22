@@ -1,8 +1,8 @@
 #' Title
 #'
 #' @param data A \code{Move*} object.
-#' @param birds
-#' @param date
+#' @param birds Temporary.
+#' @param date Temporary.
 #' @param month Integers 1-12, representing the month of the year.
 #' @param year Four digit year.
 #' @param DayNight Should the \code{Move*} object be subset to just daytime or
@@ -16,6 +16,7 @@
 #' @export
 #'
 #' @examples
+#' NA
 subsetMove <- function(data, birds = NA, date = NA, month = NA, year = NA,
                        DayNight = "no", timeSplit = "none"){
   if (is.na(birds) == TRUE &&

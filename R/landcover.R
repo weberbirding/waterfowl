@@ -17,7 +17,7 @@
 #'
 #' @examples
 #' NA
-#' @importFrom magrittr %>%
+#'
 #' @importFrom methods is
 landcover_percent <- function(data, raster.source = "FedData",
                           buffer = 0, collapse = FALSE, pivot_wide = TRUE){
@@ -113,7 +113,6 @@ landcover_percent <- function(data, raster.source = "FedData",
 #' @examples
 #' NA
 #'
-#' @importFrom magrittr %>%
 #' @importFrom methods is
 landcover_points <- function(points, raster.source = "FedData", df = FALSE){
   tag_id <- local_identifier <- location_long <- location_lat <- timestamp <-

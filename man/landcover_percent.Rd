@@ -37,4 +37,5 @@ Calculate land cover class percentages for a polygon
 }
 \examples{
 NA
+
 }
