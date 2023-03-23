@@ -85,7 +85,7 @@ home_range <- function(data, method = "AKDE", ...) {
 #'
 #' @examples
 #' NA
-home_range_area <- function(data, size = c(95, 50), method = "AKDE"){
+home_range_area <- function(data, size = c(95, 50), method = "AKDE") {
   if (is.list(data) && !is(data, "UD")) {
     results <- plyr::llply(data, home_range_area, size = size, method = method,
                            .progress = "text")
@@ -133,4 +133,44 @@ home_range_area <- function(data, size = c(95, 50), method = "AKDE"){
     )
   }
   return(df)
+}
+
+#' Write a home range to a shapefile
+#'
+#' @param data The output of \code{waterfowl::home_range}.
+#' @param method The method that produced your home range from
+#'   \code{waterfowl::home_range}.
+#'
+#' @return Write a home range shapefile to your current working direcotry.
+#' @export
+#'
+#' @examples
+#' NA
+write_home_range <- function(data, method = "AKDE") {
+  fileName = deparse(substitute(data))
+  if (method == "AKDE") {
+    ctmm::writeShapefile(
+      data, folder = getwd(),
+      file = paste0(fileName,"95"),
+      level.UD = 0.95, # home range
+      level = 0.95 #confidence interval
+    )
+    ctmm::writeShapefile(
+      data, folder = getwd(),
+      file = paste0(fileName,"50"),
+      level.UD = 0.50, #core home range
+      level = 0.95 #confidence interval
+    )
+  }
+  if (method == "dBBM"){
+    message("Warning: Only 95% home range implemented.")
+    poly = move::raster2contour(data, levels = 0.95)
+    raster::shapefile(poly, "dBBMM95.shp")
+  }
+  if (method == "MCP"){
+    stop("MCP not yet implemented.")
+  }
+  if (method == "KDE"){
+    stop("KDE not yet implemented.")
+  }
 }
