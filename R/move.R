@@ -58,39 +58,29 @@ subsetMove <- function(data, birds = NA, date = NA, month = NA, year = NA,
     data <- data[year(move::timestamps(data))==year]
   }
   if (DayNight == "day") {
-    DN <- rep("Day", move::n.locs(data)-1)
-    DN[maptools::solarpos(
-      data[-move::n.locs(data)],
-      move::timestamps(data)[-move::n.locs(data)])[,2] < -6 &
-        maptools::solarpos(data[-1], move::timestamps(data)[-1])[,2] < -6] <- "Night"
-    d.burst <- move::burst(x = data, f = DN)
-    data <- data[d.burst@burstId == "Day"]
+    tod <- time_of_day(move)
+    data <- data[tod == "day"]
   }
   if (DayNight == "night") {
-    DN <- rep("Day", move::n.locs(data)-1)
-    DN[maptools::solarpos(
-      data[-move::n.locs(data)],
-      move::timestamps(data)[-move::n.locs(data)])[,2] < -6 &
-        maptools::solarpos(data[-1], move::timestamps(data)[-1])[,2] < -6] <- "Night"
-    d.burst <- move::burst(x = data, f = DN)
-    data <- data[d.burst@burstId == "Night"]
+    tod <- time_of_day(move)
+    data <- data[tod == "night"]
   }
   if (timeSplit == "daily") {
-    startDate <- date(move::timestamps(data))[1]
-    endDate <- date(move::timestamps(data))[length(data)]
-    dates <- seq(startDate, endDate, by=1)
+    startDate <- lubridate::date(move::timestamps(data)[1])
+    endDate <- lubridate::date(move::timestamps(data))[length(data)]
+    dates <- seq(startDate, endDate, by = 1)
     list <- list()
     for (d in dates) {
       data.day <- data[as.Date(move::timestamps(data),
                                tz = lubridate::tz(move::timestamps(data))) == d]
-      list <- append(list,data.day)
+      list <- append(list, data.day)
     }
     names(list) <- as.character(dates)
     return(list)
   }
   if (timeSplit == "weekly") {
-    startDate <- date(move::timestamps(data))[1]
-    endDate <- date(move::timestamps(data))[length(data)]
+    startDate <- lubridate::date(move::timestamps(data)[1])
+    endDate <- lubridate::date(move::timestamps(data))[length(data)]
     weeks <- seq(startDate, endDate, by="week")
     list <- list()
     for (i in 1:length(weeks)) {
@@ -103,8 +93,8 @@ subsetMove <- function(data, birds = NA, date = NA, month = NA, year = NA,
     return(list)
   }
   if (timeSplit == "monthly") {
-    startDate <- date(move::timestamps(data))[1]
-    endDate <- date(move::timestamps(data))[length(data)]
+    startDate <- lubridate::date(move::timestamps(data)[1])
+    endDate <- lubridate::date(move::timestamps(data))[length(data)]
     months <- month(seq(startDate, endDate, by="month"), label = TRUE)
     years <- year(seq(startDate, endDate, by="month"))
     list <- list()
@@ -118,14 +108,58 @@ subsetMove <- function(data, birds = NA, date = NA, month = NA, year = NA,
   if (timeSplit == "yearly") {
     startDate <- date(move::timestamps(data))[1]
     endDate <- date(move::timestamps(data))[length(data)]
-    years <- unique(year(seq(startDate, endDate, by="week")))
+    years <- unique(year(seq(startDate, endDate, by = "week")))
     list <- list()
     for (i in 1:length(years)) {
-      data.month <- data[year(move::timestamps(data))==years[i]]
-      list <- append(list,data.month)
+      data.month <- data[year(move::timestamps(data)) == years[i]]
+      list <- append(list, data.month)
     }
     names(list) <- years
     return(list)
   }
   return(data)
 }
+
+#' Find the time of day
+#'
+#' @description A simple wrapper around \code{suncalc::getSunlightTimes}, modified
+#'   from \code{amt::time_of_day}. Finds the category of time of day (day vs. night)
+#'   given time stamps.
+#' @param move A \code{Move*} object or a vector of \code{POSIXct} times.
+#' @param crepuscular Should the time of day include crepuscular categories
+#'   (dawn & dusk)? Default is FALSE.
+#'
+#' @return A vector of strings for the time of day.
+#' @export
+#'
+#' @importFrom lubridate %within%
+#'
+#' @examples
+#' NA
+time_of_day <- function(move, crepuscular = FALSE) {
+  if (!requireNamespace("suncalc", quietly = TRUE)) {
+    stop("Please install package `suncalc` first.")
+  }
+  t <- move@timestamps
+  pts <- data.frame(move@coords, as.Date(t))
+  names(pts) <- c("lon", "lat", "date")
+  sun <- suncalc::getSunlightTimes(data = pts, tz = lubridate::tz(pts$date))
+
+  int.day <- lubridate::interval(sun$sunrise, sun$sunset)
+  int.dawn <- lubridate::interval(sun$dawn, sun$sunrise)
+  int.dusk <- lubridate::interval(sun$sunset, sun$dusk)
+
+  tod <- c("night", "day")[(t %within% int.day) + 1]
+
+  if (crepuscular) {
+    tod[t %within% int.dawn] <- "dawn"
+    tod[t %within% int.dusk] <- "dusk"
+  }
+
+  if (crepuscular) {
+    factor(tod, levels = c("day", "dusk", "night", "dawn"))
+  } else {
+    factor(tod, levels = c("day", "night"))
+  }
+}
+

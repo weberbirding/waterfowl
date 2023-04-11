@@ -9,18 +9,19 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The package is aimed at simplifying functions and workflows for
-waterfowl biologist and graduate students. Ultimately, its function are
-simple wrappers around functions from other packages, but with more
+The waterfowl package is aimed at simplifying functions and workflows
+for waterfowl biologist and graduate students. Ultimately, its function
+are simple wrappers around functions from other packages, but with more
 automation and with a preferred output. Looking to do some habitat
-selection analyses with tracking data? Simply use to generate a table of
-land cover classes for each location, or use to generate a GLMM-ready
-table of land cover percentages for a given home range or area. No need
-to fuss with all the intermediate steps; the package will do that for
-you! Suggestions for additions or changes to the package are more than
+selection analyses with tracking data? Simply use landcover_points() to
+generate a table of land cover classes for each location, or use
+landcover_percent() to generate a GLMM-ready table of land cover
+percentages for a given home range or area. No need to fuss with all the
+intermediate steps; the waterfowl package will do that for you!
+Suggestions for additions or changes to the package are more than
 welcome!
 
-is a work in progress!
+The waterfowl package is a work in progress!
 
 ## Installation
 
@@ -60,10 +61,3 @@ up-to-date. `devtools::build_readme()` is handy for this. You could also
 use GitHub Actions to re-render `README.Rmd` every time you push. An
 example workflow can be found here:
 <https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
