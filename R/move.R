@@ -67,7 +67,7 @@ subsetMove <- function(data, birds = NA, date = NA, month = NA, year = NA,
   }
   if (timeSplit == "daily") {
     startDate <- lubridate::date(move::timestamps(data)[1])
-    endDate <- lubridate::date(move::timestamps(data))[length(data)]
+    endDate <- lubridate::date(move::timestamps(data)[length(data)])
     dates <- seq(startDate, endDate, by = 1)
     list <- list()
     for (d in dates) {
@@ -80,13 +80,13 @@ subsetMove <- function(data, birds = NA, date = NA, month = NA, year = NA,
   }
   if (timeSplit == "weekly") {
     startDate <- lubridate::date(move::timestamps(data)[1])
-    endDate <- lubridate::date(move::timestamps(data))[length(data)]
+    endDate <- lubridate::date(move::timestamps(data)[length(data)])
     weeks <- seq(startDate, endDate, by="week")
     list <- list()
     for (i in 1:length(weeks)) {
       data.week <- data[as.Date(move::timestamps(data),
                                 tz = lubridate::tz(move::timestamps(data))) %in%
-                          c(as.Date(weeks[i]):as.Date(weeks[i]+6))]
+                          c(as.Date(weeks[i]):as.Date(weeks[i] + 6))]
       list <- append(list,data.week)
     }
     names(list) <- as.character(weeks)
@@ -94,24 +94,24 @@ subsetMove <- function(data, birds = NA, date = NA, month = NA, year = NA,
   }
   if (timeSplit == "monthly") {
     startDate <- lubridate::date(move::timestamps(data)[1])
-    endDate <- lubridate::date(move::timestamps(data))[length(data)]
-    months <- month(seq(startDate, endDate, by="month"), label = TRUE)
-    years <- year(seq(startDate, endDate, by="month"))
+    endDate <- lubridate::date(move::timestamps(data)[length(data)])
+    months <- lubridate::month(seq(startDate, endDate, by = "month"), label = TRUE)
+    years <- lubridate::year(seq(startDate, endDate, by = "month"))
     list <- list()
     for (i in 1:length(months)) {
-      data.month <- data[month(move::timestamps(data), label = TRUE) == months[i]]
+      data.month <- data[lubridate::month(move::timestamps(data), label = TRUE) == months[i]]
       list <- append(list,data.month)
     }
     names(list) <- paste(months, years, sep = " ")
     return(list)
   }
   if (timeSplit == "yearly") {
-    startDate <- date(move::timestamps(data))[1]
-    endDate <- date(move::timestamps(data))[length(data)]
-    years <- unique(year(seq(startDate, endDate, by = "week")))
+    startDate <- lubridate::date(move::timestamps(data)[1])
+    endDate <- lubridate::date(move::timestamps(data)[length(data)])
+    years <- unique(lubridate::year(seq(startDate, endDate, by = "week")))
     list <- list()
     for (i in 1:length(years)) {
-      data.month <- data[year(move::timestamps(data)) == years[i]]
+      data.month <- data[lubridate::year(move::timestamps(data)) == years[i]]
       list <- append(list, data.month)
     }
     names(list) <- years
