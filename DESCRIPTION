@@ -16,21 +16,22 @@ BugReports: https://github.com/weberbirding/waterfowl/issues
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Depends:
+    dplyr,
+    lubridate,
+    move,
+    terra,
+    tidyr
 Imports: 
     adehabitatHR,
     ctmm,
-    dplyr,
     exactextractr,
     FedData,
     lifecycle,
-    lubridate,
     magrittr,
     maptools,
     methods,
-    move,
     plyr,
     raster,
     sf,
-    sp,
-    terra,
-    tidyr
+    sp
