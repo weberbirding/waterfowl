@@ -43,20 +43,20 @@ acc_pivot_wider <- function(data, burstMinApart = 6, pointsPerBurst = 30,
                               ncol = (3*pointsPerBurst)+2))
   colnames(result)[1] <- "device_id"
   colnames(result)[2] <- "UTC_datetime"
-  colnames(result)[3:ncol(result)] <- c("x","y","z")
+  colnames(result)[3:ncol(result)] <- c("x", "y", "z")
   result[,1] <- data$device_id[1]
   result[,2] <- bursts
-  vec <- c(data$acc_x[1],data$acc_y[1],data$acc_z[1])
+  vec <- c(data$acc_x[1], data$acc_y[1], data$acc_z[1])
   burstPosition <- 1
   for (i in 2:length(data$acc_x)){
     if (difftime(data$UTC_datetime[i],
-                 data$UTC_datetime[i-1],
-                 units = "mins") < (burstMinApart/2)){
-      vec.new <- c(data$acc_x[i],data$acc_y[i],data$acc_z[i])
-      vec <- append(vec,vec.new)
+                 data$UTC_datetime[i - 1],
+                 units = "mins") < (burstMinApart / 2)){
+      vec.new <- c(data$acc_x[i], data$acc_y[i], data$acc_z[i])
+      vec <- append(vec, vec.new)
       if (i == length(data$acc_x)){
         len <- length(vec)
-        result[burstPosition, 3:(len+2)] <- vec
+        result[burstPosition, 3:(len + 2)] <- vec
       }
     } else {
       len <- length(vec)
@@ -70,6 +70,11 @@ acc_pivot_wider <- function(data, burstMinApart = 6, pointsPerBurst = 30,
   }
   return(result)
 }
+
+## quiets concerns of R CMD check for variables that appear in pipelines
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c(".", "device_id", "UTC_datetime", "acc_x", "acc_y", "acc_z"))
+  }
 
 calculate_feature_extra <- function(df_raw = NULL, winlen_dba = 9, axis_num = 3)
 {

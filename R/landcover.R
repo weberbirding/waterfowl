@@ -18,11 +18,10 @@
 #' @examples
 #' NA
 #'
+#' @import move
 #' @importFrom methods is
 landcover_percent <- function(data, raster.source = "FedData",
                           buffer = 0, collapse = FALSE, pivot_wide = TRUE){
-  value <- coverage_area <- . <- nlcd_legend <- Class <- percent_cover <-
-    Class <- NULL
   if (is.list(data)){
     results <- plyr::llply(data, landcover_percent, raster.source = raster.source,
                            buffer = buffer, collapse = collapse,
@@ -113,10 +112,9 @@ landcover_percent <- function(data, raster.source = "FedData",
 #' @examples
 #' NA
 #'
+#' @import move
 #' @importFrom methods is
 landcover_points <- function(points, raster.source = "FedData", df = FALSE){
-  tag_id <- local_identifier <- location_long <- location_lat <- timestamp <-
-    NULL
   if (is.list(points)){
     results <- plyr::llply(points, landcover_points, raster.source = raster.source,
                            df = df, .progress = "text")
@@ -124,7 +122,7 @@ landcover_points <- function(points, raster.source = "FedData", df = FALSE){
   }
   if (is(raster.source, "character")){
     raster <- FedData::get_nlcd(
-      template = vec,
+      template = points,
       label = "landcover",
       dataset = "landcover",
       force.redo = TRUE
@@ -180,4 +178,12 @@ landcover_points <- function(points, raster.source = "FedData", df = FALSE){
     }
     return(df)
   }
+}
+## quiets concerns of R CMD check for variables that appear in pipelines
+if(getRversion() >= "2.15.1") {
+  utils::globalVariables(c(".", "value", "coverage_area",
+                           "nlcd_legend", "Class",
+                           "percent_cover", "tag_id",
+                           "local_identifier", "location_long",
+                           "location_lat", "timestamp"))
 }

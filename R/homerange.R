@@ -15,7 +15,7 @@
 #'   \item \code{"MCP"}: Minimum convex polygon from the \code{adehabitatHR} package.
 #'   \item \code{"KDE"}: Kernel density estimate from the \code{adehabitatHR} package.
 #' }
-#'
+#' @param parallel Should the function be run in parallel? Default is TRUE.
 #' @param ... Additional parameters to pass to the home range function of your
 #'   choice.
 #'
@@ -24,13 +24,29 @@
 #'
 #' @examples
 #' NA
-home_range <- function(data, method = "AKDE", ...) {
+#'
+#' @import move
+home_range <- function(data, method = "AKDE", parallel = TRUE, ...) {
   if (is(data, "MoveStack")) {
     data <- move::split(data)
   }
   if (is.list(data)) {
-    results <- plyr::llply(data, home_range, method = method,
-                           .progress = "text")
+    if (parallel) {
+      requireNamespace("doParallel", quietly = TRUE)
+      cores <- parallel::detectCores() - 1
+      cl <- parallel::makeCluster(cores)
+      doParallel::registerDoParallel(cl, cores = cores)
+      opts <- list(preschedule = TRUE)
+      parallel::clusterSetRNGStream(cl, 123)
+      results <- supressWarnings(plyr::llply(data, home_range, method = method,
+                             .progress = "text",
+                             .parallel = TRUE,
+                             .paropts = list(.options.snow = opts)))
+      stopCluster(cl)
+    } else {
+      results <- plyr::llply(data, home_range, method = method,
+                             .progress = "text")
+    }
     return(results)
   }
   if (!is(data, "Move")) {
@@ -85,6 +101,8 @@ home_range <- function(data, method = "AKDE", ...) {
 #'
 #' @examples
 #' NA
+#'
+#' @import move
 home_range_area <- function(data, size = c(95, 50), method = "AKDE") {
   if (is.list(data) && !is(data, "UD")) {
     results <- plyr::llply(data, home_range_area, size = size, method = method,
@@ -146,6 +164,8 @@ home_range_area <- function(data, size = c(95, 50), method = "AKDE") {
 #'
 #' @examples
 #' NA
+#'
+#' @import move
 write_home_range <- function(data, method = "AKDE") {
   fileName = deparse(substitute(data))
   if (method == "AKDE") {

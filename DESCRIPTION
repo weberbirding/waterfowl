@@ -17,21 +17,24 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends:
-    dplyr,
-    lubridate,
-    move,
-    terra,
-    tidyr
+    move
 Imports: 
     adehabitatHR,
+    caTools,
     ctmm,
+    doParallel,
+    dplyr,
+    e1071,
     exactextractr,
     FedData,
     lifecycle,
+    lubridate,
     magrittr,
-    maptools,
     methods,
     plyr,
     raster,
     sf,
-    sp
+    sp,
+    suncalc,
+    terra,
+    tidyr

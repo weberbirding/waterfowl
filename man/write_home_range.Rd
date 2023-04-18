@@ -20,4 +20,5 @@ Write a home range to a shapefile
 }
 \examples{
 NA
+
 }

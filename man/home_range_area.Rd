@@ -23,4 +23,5 @@ Retrieve the home range size in hectares
 }
 \examples{
 NA
+
 }

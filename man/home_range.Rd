@@ -4,7 +4,7 @@
 \alias{home_range}
 \title{Calculate a home range from a \code{Move} object}
 \usage{
-home_range(data, method = "AKDE", ...)
+home_range(data, method = "AKDE", parallel = TRUE, ...)
 }
 \arguments{
 \item{data}{A \code{Move*} object, or a list of those objects.}
@@ -18,6 +18,8 @@ package.
 \item \code{"MCP"}: Minimum convex polygon from the \code{adehabitatHR} package.
 \item \code{"KDE"}: Kernel density estimate from the \code{adehabitatHR} package.
 }}
+
+\item{parallel}{Should the function be run in parallel? Default is TRUE.}
 
 \item{...}{Additional parameters to pass to the home range function of your
 choice.}
@@ -33,4 +35,5 @@ and more will be added.
 }
 \examples{
 NA
+
 }

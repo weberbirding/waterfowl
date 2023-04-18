@@ -22,6 +22,8 @@
 #'
 #' @examples
 #' NA
+#'
+#' @import move
 subsetMove <- function(data, birds = NA, date = NA, month = NA, year = NA,
                        DayNight = "no", timeSplit = "none"){
   if (is.na(birds) &&
@@ -136,6 +138,8 @@ subsetMove <- function(data, birds = NA, date = NA, month = NA, year = NA,
 #'
 #' @examples
 #' NA
+#'
+#' @import move
 time_of_day <- function(move, crepuscular = FALSE) {
   if (!requireNamespace("suncalc", quietly = TRUE)) {
     stop("Please install package `suncalc` first.")

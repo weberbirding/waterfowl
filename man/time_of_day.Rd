@@ -22,4 +22,5 @@ given time stamps.
 }
 \examples{
 NA
+
 }

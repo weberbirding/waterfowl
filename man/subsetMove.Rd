@@ -44,4 +44,5 @@ week, month, or year.
 }
 \examples{
 NA
+
 }
