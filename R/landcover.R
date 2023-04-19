@@ -19,7 +19,7 @@
 #' @import move
 #' @importFrom methods is
 landcover_percent <- function(data, raster.source = "FedData",
-                             buffer = 0, pivot_wide = TRUE){
+                             buffer = 0, pivot_wide = TRUE) {
   if (is.list(data)){
     results <- plyr::llply(data, landcover_percent, raster.source = raster.source,
                            buffer = buffer, pivot_wide = pivot_wide,
@@ -194,7 +194,6 @@ landcover_points <- function(points, raster.source = "FedData", add = FALSE){
     return(df)
   }
 }
-
 ## quiets concerns of R CMD check for variables that appear in pipelines
 if(getRversion() >= "2.15.1") {
   utils::globalVariables(c(".", "value", "coverage_area",
