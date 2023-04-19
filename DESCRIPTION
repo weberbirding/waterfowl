@@ -1,6 +1,6 @@
 Package: waterfowl
 Title: Functions for Waterfowl Research
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: 
     person("David", "Weber", , "dweber1594@gmail.com", role = c("aut", "cre"))
 Description: A group of wrapper functions to simplify and streamline waterfowl research, 

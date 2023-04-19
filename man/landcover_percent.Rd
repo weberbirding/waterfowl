@@ -8,7 +8,6 @@ landcover_percent(
   data,
   raster.source = "FedData",
   buffer = 0,
-  collapse = FALSE,
   pivot_wide = TRUE
 )
 }
@@ -21,9 +20,6 @@ Database using the \code{FedData} package. Otherwise, accepts any raster that ca
 work with \code{terra::rast()}.}
 
 \item{buffer}{An optional buffer to add to your spatial data, in meters.}
-
-\item{collapse}{If TRUE and the input was a list, collapses the list into a
-single data frame.}
 
 \item{pivot_wide}{If TRUE, pivots the resulting data frame so that each value
 type (by default land cover classes) is in its own column. Useful if you intend
