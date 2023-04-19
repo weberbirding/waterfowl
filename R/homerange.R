@@ -32,6 +32,7 @@ home_range <- function(data, method = "AKDE", parallel = TRUE, ...) {
   }
   if (is.list(data)) {
     if (parallel) {
+      ## update to use something other than llply due to warnings
       requireNamespace("doParallel", quietly = TRUE)
       cores <- parallel::detectCores() - 1
       cl <- parallel::makeCluster(cores)
@@ -39,7 +40,6 @@ home_range <- function(data, method = "AKDE", parallel = TRUE, ...) {
       opts <- list(preschedule = TRUE)
       parallel::clusterSetRNGStream(cl, 123)
       results <- supressWarnings(plyr::llply(data, home_range, method = method,
-                             .progress = "text",
                              .parallel = TRUE,
                              .paropts = list(.options.snow = opts)))
       stopCluster(cl)
